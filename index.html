@@ -1,0 +1,458 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Aljon Esteban Abad</title>
+    <style>
+      :root {
+        --border-blue: #bce8f1;
+        --header-blue: #d9edf7;
+        --link-blue: #337ab7;
+        --text: #333;
+        --cell-border: #ddd;
+        --result-red: #d9534f;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        margin: 0;
+        min-height: 100%;
+        background: #fff;
+        color: var(--text);
+        font-family: "Roboto", Arial, sans-serif;
+      }
+
+      body {
+        padding: 20px 15px 80px;
+      }
+
+      .panel {
+        width: 100%;
+        max-width: 1200px;
+        margin: 0 auto;
+        border: 1px solid var(--border-blue);
+        border-radius: 12px;
+        overflow: hidden;
+        background: #fff;
+      }
+
+      .panel-header {
+        height: 42px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 0 14px;
+        border-bottom: 1px solid var(--border-blue);
+        background: var(--header-blue);
+        color: #337ab7;
+        font-size: 16px;
+        line-height: 1;
+      }
+
+      .user-icon {
+        width: 16px;
+        height: 16px;
+        flex: 0 0 16px;
+        fill: #337ab7;
+      }
+
+      .content {
+        padding: 38px 10px 10px;
+      }
+
+      .tabs {
+        display: flex;
+        align-items: flex-end;
+        gap: 2px;
+        margin-bottom: 0;
+      }
+
+      .tab {
+        display: inline-block;
+        padding: 6px 12px;
+        border: 1px solid transparent;
+        border-radius: 3px 3px 0 0;
+        background: #fff;
+        color: var(--link-blue);
+        cursor: pointer;
+        font-size: 16px;
+        line-height: 1.42857143;
+        text-decoration: none;
+      }
+
+      .tab.active {
+        border-color: #333;
+        border-bottom-color: #fff;
+        color: #333;
+        position: relative;
+        z-index: 1;
+        margin-bottom: -1px;
+      }
+
+      .view {
+        display: none;
+        overflow-x: auto;
+      }
+
+      .view.active {
+        display: block;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        table-layout: fixed;
+        font-size: 16px;
+        line-height: 1.35;
+      }
+
+      th,
+      td {
+        border: 1px solid var(--cell-border);
+        padding: 8px 8px;
+        vertical-align: top;
+        overflow-wrap: break-word;
+        word-wrap: break-word;
+      }
+
+      th {
+        background: #fff;
+        color: #333;
+        font-weight: 700;
+        text-align: left;
+        white-space: normal;
+      }
+
+      td {
+        color: #334e68;
+      }
+
+      .training-table col:nth-child(1) {
+        width: 8%;
+      }
+      .training-table col:nth-child(2) {
+        width: 7.5%;
+      }
+      .training-table col:nth-child(3) {
+        width: 17.5%;
+      }
+      .training-table col:nth-child(4) {
+        width: 23%;
+      }
+      .training-table col:nth-child(5) {
+        width: 9%;
+      }
+      .training-table col:nth-child(6) {
+        width: 8%;
+      }
+      .training-table col:nth-child(7) {
+        width: 18.5%;
+      }
+      .training-table col:nth-child(8) {
+        width: 8.5%;
+      }
+
+      .assessment-table col:nth-child(1) {
+        width: 9%;
+      }
+      .assessment-table col:nth-child(2) {
+        width: 12%;
+      }
+      .assessment-table col:nth-child(3) {
+        width: 23%;
+      }
+      .assessment-table col:nth-child(4) {
+        width: 24%;
+      }
+      .assessment-table col:nth-child(5) {
+        width: 10%;
+      }
+      .assessment-table col:nth-child(6) {
+        width: 17%;
+      }
+      .assessment-table col:nth-child(7) {
+        width: 5%;
+      }
+
+      .assessment-result {
+        color: var(--result-red);
+        font-family: Menlo, Monaco, Consolas, "Courier New", monospace;
+      }
+
+      .assessment-result-text {
+        background: #fff7f7;
+      }
+
+      .assessment-gutter {
+        padding: 0;
+        background: #fff;
+      }
+
+      .renewal-table col:nth-child(1) {
+        width: 21%;
+      }
+      .renewal-table col:nth-child(2) {
+        width: 8%;
+      }
+      .renewal-table col:nth-child(3) {
+        width: 52%;
+      }
+      .renewal-table col:nth-child(4) {
+        width: 19%;
+      }
+
+      @media (max-width: 700px) {
+        body {
+          padding: 15px;
+        }
+
+        .content {
+          padding: 30px 8px 8px;
+        }
+
+        .view {
+          margin-right: -1px;
+        }
+
+        table {
+          min-width: 1050px;
+        }
+
+        .renewal-table {
+          min-width: 800px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="panel">
+      <header class="panel-header">
+        <svg class="user-icon" viewBox="0 0 16 16" aria-hidden="true">
+          <path
+            d="M8 8a3.1 3.1 0 1 0 0-6.2A3.1 3.1 0 0 0 8 8Zm0 1.25c-3.05 0-5.5 1.63-5.5 3.65v1.3h11v-1.3c0-2.02-2.45-3.65-5.5-3.65Z"
+          />
+        </svg>
+        <span>ALJON ESTEBAN ABAD</span>
+      </header>
+
+      <section class="content">
+        <nav class="tabs" aria-label="Records">
+          <a
+            class="tab active"
+            href="#training"
+            data-view="training"
+            aria-selected="true"
+            >Training</a
+          >
+          <a
+            class="tab"
+            href="#assessment"
+            data-view="assessment"
+            aria-selected="false"
+            >Assessment</a
+          >
+          <a
+            class="tab"
+            href="#renewal"
+            data-view="renewal"
+            aria-selected="false"
+            >Renewal</a
+          >
+        </nav>
+
+        <section
+          id="training"
+          class="view active"
+          aria-label="Training records"
+        >
+          <table class="training-table">
+            <colgroup>
+              <col />
+              <col />
+              <col />
+              <col />
+              <col />
+              <col />
+              <col />
+              <col />
+            </colgroup>
+            <thead>
+              <tr>
+                <th>Region</th>
+                <th>Province</th>
+                <th>School</th>
+                <th>Qualification</th>
+                <th>Schedule</th>
+                <th>Trainor</th>
+                <th>Type of Scholarship</th>
+                <th>Training Result</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Region III -<br />Central Luzon</td>
+                <td>Bulacan</td>
+                <td>
+                  BRIGINO TECHNICAL<br />VOCATIONAL TRAINING AND<br />ASSESSMENT
+                  CENTER, INC.
+                </td>
+                <td>
+                  Heavy Equipment Operation (Rigid On-<br />Highway Dump Truck)
+                  Heavy<br />Equipment Operation (Rigid On-<br />Highway Dump
+                  Truck) NC II
+                </td>
+                <td>5/25/2021 -<br />6/15/2021</td>
+                <td>Tirso C<br />Alpajora</td>
+                <td>
+                  Private Education<br />Student Financial<br />Assistance
+                  (PESFA)
+                </td>
+                <td>Completed</td>
+              </tr>
+              <tr>
+                <td>Region III -<br />Central Luzon</td>
+                <td>Bulacan</td>
+                <td>
+                  BRIGINO TECHNICAL<br />VOCATIONAL TRAINING AND<br />ASSESSMENT
+                  CENTER, INC.
+                </td>
+                <td>
+                  Heavy Equipment Operation (Truck - Mounted Crane)<br />Heavy
+                  Equipment Operation (Mounted Crane)<br />NC II
+                </td>
+                <td>3/6/2026 -<br />4/10/2026</td>
+                <td>Danilo<br />Aduna<br />Galang</td>
+                <td>Training for Work<br />Scholarship Program<br />(TWSP)</td>
+                <td>Completed</td>
+              </tr>
+            </tbody>
+          </table>
+        </section>
+
+        <section id="assessment" class="view" aria-label="Assessment records">
+          <table class="assessment-table">
+            <colgroup>
+              <col />
+              <col />
+              <col />
+              <col />
+              <col />
+              <col />
+              <col />
+            </colgroup>
+            <thead>
+              <tr>
+                <th>Region</th>
+                <th>Province</th>
+                <th>Assessment Center</th>
+                <th>Qualification</th>
+                <th>Schedule</th>
+                <th></th>
+                <th aria-label="Blank"></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Region III -<br />Central Luzon</td>
+                <td>Bulacan</td>
+                <td>
+                  BRIGINO TECHNICAL VOCATIONAL TRAINING<br />AND ASSESSMENT
+                  CENTER, INC.
+                </td>
+                <td>
+                  Heavy Equipment Operation (Rigid On-<br />Highway Dump Truck)
+                  NC II
+                </td>
+                <td>11/29/2021</td>
+                <td class="assessment-result">
+                  <span class="assessment-result-text">Assessment Result :</span
+                  ><br /><span class="assessment-result-text">Competent</span>
+                </td>
+                <td class="assessment-gutter"></td>
+              </tr>
+              <tr>
+                <td>Region III -<br />Central Luzon</td>
+                <td>Bulacan</td>
+                <td>
+                  BRIGINO TECHNICAL VOCATIONAL TRAINING<br />AND ASSESSMENT
+                  CENTER, INC.
+                </td>
+                <td>
+                  Heavy Equipment Operation (Truck - Mounted Crane) NC<br />II
+                </td>
+                <td>4/11/2026</td>
+                <td class="assessment-result">
+                  <span class="assessment-result-text">Assessment Result :</span
+                  ><br /><span class="assessment-result-text">Competent</span>
+                </td>
+                <td class="assessment-gutter"></td>
+              </tr>
+            </tbody>
+          </table>
+        </section>
+
+        <section id="renewal" class="view" aria-label="Renewal records">
+          <table class="renewal-table">
+            <colgroup>
+              <col />
+              <col />
+              <col />
+              <col />
+            </colgroup>
+            <thead>
+              <tr>
+                <th>Region</th>
+                <th>Province</th>
+                <th>Qualification</th>
+                <th>Valid Until</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Region III - Central Luzon</td>
+                <td>Bulacan</td>
+                <td>
+                  Heavy Equipment Operation (Rigid On-Highway Dump Truck) NC II
+                </td>
+                <td>11/28/2026</td>
+              </tr>
+              <tr>
+                <td>Region III - Central Luzon</td>
+                <td>Bulacan</td>
+                <td>Heavy Equipment Operation (Truck - Mounted Crane) NC II</td>
+                <td>4/10/2031</td>
+              </tr>
+            </tbody>
+          </table>
+        </section>
+      </section>
+    </main>
+
+    <script>
+      const tabs = document.querySelectorAll(".tab");
+      const views = document.querySelectorAll(".view");
+
+      tabs.forEach((tab) => {
+        tab.addEventListener("click", (event) => {
+          event.preventDefault();
+          const selectedView = tab.dataset.view;
+
+          tabs.forEach((item) => {
+            const isActive = item === tab;
+            item.classList.toggle("active", isActive);
+            item.setAttribute("aria-selected", String(isActive));
+          });
+
+          views.forEach((view) => {
+            view.classList.toggle("active", view.id === selectedView);
+          });
+        });
+      });
+    </script>
+  </body>
+</html>
